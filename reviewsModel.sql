@@ -27,7 +27,7 @@ CREATE TABLE characteristics (
   name VARCHAR NOT NULL
 );
 
-CREATE review_characteristics (
+CREATE characteristic_reviews (
   id SERIAL PRIMARY KEY,
   review_id INT REFERENCES reviews(id),
   characteristic_id INT REFERENCES characteristics(id),
