@@ -7,15 +7,15 @@ const reviewsSchema = new mongoose.Schema({
   // so I've decided not to create an id property
   product_id: { type: Number, required: true },
   rating: { type: Number, required: true },
-  date: { type: Date, required: true },
-  summary: { type: String, maxLength: 60 },
+  date: { type: Number, required: true },
+  summary: { type: String, maxLength: 60, required: true },
   body: { type: String, maxLength: 1000, required: true },
   recommeneded: { type: Boolean, required: true },
+  reported: { type: Boolean, default: false, required: true },
   reviewer_name: { type: String, maxLength: 60, required: true },
+  reviewer_email: { type: String, maxLength: 60, required: true },
   response: { type: String },
   helpfulness: { type: Number, default: 0, required: true },
-  reported: { type: Boolean, default: false, required: true },
-  reviewer_email: { type: String, maxLength: 60, required: true },
   photos: [{
     // automatically creates an id
     url: String

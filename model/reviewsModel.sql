@@ -4,15 +4,15 @@ CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
   rating INT NOT NULL,
-  date DATE NOT NULL,
-  summary VARCHAR(60),
+  date BIGINT NOT NULL,
+  summary VARCHAR(60) NOT NULL,
   body VARCHAR(1000) NOT NULL,
   recommended BOOLEAN NOT NULL,
-  reviewer_name VARCHAR(60) NOT NULL,
-  response VARCHAR,
-  helpfulness INT NOT NULL DEFAULT 0,
   reported BOOLEAN NOT NULL DEFAULT false,
-  reviewer_email VARCHAR(60) NOT NULL
+  reviewer_name VARCHAR(60) NOT NULL,
+  reviewer_email VARCHAR(60) NOT NULL,
+  response VARCHAR,
+  helpfulness INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE photos (
