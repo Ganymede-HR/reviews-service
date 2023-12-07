@@ -1,4 +1,12 @@
+DROP DATABASE IF EXISTS reviews;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS photos;
+DROP TABLE IF EXISTS characteristics;
+DROP TABLE IF EXISTS characteristic_reviews;
+
 CREATE DATABASE reviews;
+
+\c reviews;
 
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
