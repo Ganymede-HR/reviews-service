@@ -18,15 +18,15 @@ const reviewsSchema = new mongoose.Schema({
   helpfulness: { type: Number, default: 0, required: true },
   photos: [{
     // automatically creates an id
-    url: String
+    url: String,
   }],
   characteristics: {
     type: Map,
     of: new mongoose.Schema({
       // automatically creates an id
-      value: { type: Number, required: true }
-    })
-  }
+      value: { type: Number, required: true },
+    }),
+  },
 });
 
 const Reviews = mongoose.model('Reviews', reviewsSchema);
