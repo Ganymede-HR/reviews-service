@@ -1,21 +1,22 @@
 DROP DATABASE IF EXISTS reviews;
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS photos;
-DROP TABLE IF EXISTS characteristics;
-DROP TABLE IF EXISTS characteristic_reviews;
 
 CREATE DATABASE reviews;
 
 \c reviews;
+
+DROP TABLE IF EXISTS characteristic_reviews CASCADE;
+DROP TABLE IF EXISTS characteristics CASCADE;
+DROP TABLE IF EXISTS photos CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
 
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
   rating INT NOT NULL,
   date BIGINT NOT NULL,
-  summary VARCHAR(60) NOT NULL,
+  summary VARCHAR(200) NOT NULL,
   body VARCHAR(1000) NOT NULL,
-  recommended BOOLEAN NOT NULL,
+  recommend BOOLEAN NOT NULL,
   reported BOOLEAN NOT NULL DEFAULT false,
   reviewer_name VARCHAR(60) NOT NULL,
   reviewer_email VARCHAR(60) NOT NULL,
@@ -35,9 +36,15 @@ CREATE TABLE characteristics (
   name VARCHAR NOT NULL
 );
 
-CREATE characteristic_reviews (
+CREATE TABLE characteristic_reviews (
   id SERIAL PRIMARY KEY,
-  review_id INT REFERENCES reviews(id),
   characteristic_id INT REFERENCES characteristics(id),
-  value INT VARCHAR NOT NULL
+  review_id INT REFERENCES reviews(id),
+  value INT NOT NULL
 );
+
+--ETL Code
+COPY reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews.csv' DELIMITER ',' CSV HEADER;
+COPY photos FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+COPY characteristics FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristics.csv' DELIMITER ',' CSV HEADER;
+COPY characteristic_reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
