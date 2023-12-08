@@ -2,13 +2,23 @@
   "name": "reviews-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server-dev": "npx nodemon --watch server server/index.js",
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:fix": "eslint --fix ."
   },
-  "author": "",
+  "author": "Hazel Kimberly Carcido",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0"
   }
 }
