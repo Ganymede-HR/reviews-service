@@ -48,3 +48,16 @@ COPY reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews.cs
 COPY photos FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
 COPY characteristics FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristics.csv' DELIMITER ',' CSV HEADER;
 COPY characteristic_reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+
+--Transform Date Format
+ALTER TABLE reviews
+ADD COLUMN new_date TIMESTAMP NOT NULL DEFAULT NOW();
+
+UPDATE reviews
+SET new_date = TO_TIMESTAMP(date / 1000);
+
+ALTER TABLE reviews
+DROP COLUMN date;
+
+ALTER TABLE reviews
+RENAME COLUMN new_date TO date;
