@@ -3,26 +3,26 @@ const express = require('express');
 // Creates a new router object
 const reviewRouter = express.Router();
 const {
-  getReviews,
-  getMeta,
-  addReview,
-  updateHelpfulCount,
-  reportReview,
+  getReviewsHandler,
+  getMetaHandler,
+  addReviewHandler,
+  helpfulnessHandler,
+  reportHandler,
 } = require('./reviewControllers');
 
 // Get list of reviews
-reviewRouter.get('/', getReviews);
+reviewRouter.get('/', getReviewsHandler);
 
 // Get metadata for a given product
-reviewRouter.get('/meta', getMeta);
+reviewRouter.get('/meta', getMetaHandler);
 
 // Add a review
-reviewRouter.post('/', addReview);
+reviewRouter.post('/', addReviewHandler);
 
 // Mark review as helpful
-reviewRouter.put('/:review_id/helpful', updateHelpfulCount);
+reviewRouter.put('/:review_id/helpful', helpfulnessHandler);
 
 // Report review
-reviewRouter.put('/:review_id/report', reportReview);
+reviewRouter.put('/:review_id/report', reportHandler);
 
 module.exports = reviewRouter;
