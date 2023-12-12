@@ -57,7 +57,6 @@ module.exports = {
         };
         res.status(200).json(response);
       } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
       }
     }
@@ -68,7 +67,6 @@ module.exports = {
       res.status(422).send('Invalid product_id');
     } else {
       const { product_id } = req.query;
-
       const queryText = `
         SELECT
           ${product_id} AS product_id,
@@ -104,39 +102,91 @@ module.exports = {
         const result = await pool.query(queryText);
         res.status(200).json(result.rows[0]);
       } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
       }
     }
   },
 
   addReview: async (req, res) => {
+    if (!req.body.product_id) {
+      res.status(422).send('Invalid product_id');
+    } else {
+      const chars = req.body.characteristics;
+      const queryText = `
+          INSERT INTO reviews(product_id, rating, summary, body, recommend, reviewer_name, reviewer_email)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          RETURNING id;
+      `;
+      const charReviewQueryText = `
+        INSERT INTO characteristic_reviews(characteristic_id, review_id, value)
+        VALUES ($1, $2, $3)
+      `;
+      const photoQueryText = `
+        INSERT INTO photos(review_id, url)
+        VALUES ($1, $2)
+      `;
 
+      try {
+        const result = await pool.query(queryText, [
+          req.body.product_id,
+          req.body.rating,
+          req.body.summary,
+          req.body.body,
+          req.body.recommend,
+          req.body.name,
+          req.body.email,
+        ]);
+        const reviewID = await result.rows[0].id;
+
+        if (Object.keys(chars).length) {
+          Object.entries(chars).forEach(async ([charId, charVal]) => {
+            await pool.query(charReviewQueryText, [charId, reviewID, charVal]);
+          });
+        }
+
+        if (req.body.photos.length) {
+          req.body.photos.forEach(async (url) => {
+            await pool.query(photoQueryText, [reviewID, url]);
+          });
+        }
+
+        res.sendStatus(201);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+      }
+    }
   },
 
   updateHelpfulCount: async (req, res) => {
-    const { review_id } = req.params;
-    const queryText = 'UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = $1';
+    if (!req.params.review_id) {
+      res.status(422).send('Invalid review_id');
+    } else {
+      const { review_id } = req.params;
+      const queryText = 'UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = $1';
 
-    try {
-      const results = await pool.query(queryText, [review_id]);
-      res.sendStatus(204);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
+      try {
+        const results = await pool.query(queryText, [review_id]);
+        res.sendStatus(204);
+      } catch (err) {
+        res.status(500).send('Internal Server Error');
+      }
     }
   },
 
   reportReview: async (req, res) => {
-    const { review_id } = req.params;
-    const queryText = 'UPDATE reviews SET reported = true WHERE id = $1';
+    if (!req.params.review_id) {
+      res.status(422).send('Invalid review_id');
+    } else {
+      const { review_id } = req.params;
+      const queryText = 'UPDATE reviews SET reported = true WHERE id = $1';
 
-    try {
-      await pool.query(queryText, [review_id]);
-      res.sendStatus(204);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
+      try {
+        await pool.query(queryText, [review_id]);
+        res.sendStatus(204);
+      } catch (err) {
+        res.status(500).send('Internal Server Error');
+      }
     }
   },
 };
