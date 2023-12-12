@@ -137,19 +137,22 @@ module.exports = {
           req.body.email,
         ]);
         const reviewID = await result.rows[0].id;
+        let charReviewPromises = [];
+        let photoPromises = [];
 
         if (Object.keys(chars).length) {
-          Object.entries(chars).forEach(async ([charId, charVal]) => {
-            await pool.query(charReviewQueryText, [charId, reviewID, charVal]);
-          });
+          charReviewPromises = Object.entries(chars).map(([charId, charVal]) => (
+            pool.query(charReviewQueryText, [charId, reviewID, charVal])
+          ));
         }
 
         if (req.body.photos.length) {
-          req.body.photos.forEach(async (url) => {
-            await pool.query(photoQueryText, [reviewID, url]);
-          });
+          photoPromises = req.body.photos.map((url) => (
+            pool.query(photoQueryText, [reviewID, url])
+          ));
         }
 
+        await Promise.all([...charReviewPromises, ...photoPromises]);
         res.sendStatus(201);
       } catch (err) {
         console.error(err);
