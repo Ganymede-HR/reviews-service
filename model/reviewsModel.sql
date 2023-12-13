@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS characteristics CASCADE;
 DROP TABLE IF EXISTS photos CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 
+
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
@@ -62,7 +63,29 @@ DROP COLUMN date;
 ALTER TABLE reviews
 RENAME COLUMN new_date TO date;
 
+--Tansform stringified null into null type
+ALTER TABLE reviews
+ADD COLUMN new_response VARCHAR;
+
+UPDATE reviews
+SET new_response = CASE
+                    WHEN response = 'null' THEN NULL
+                    ELSE response
+                  END;
+
+ALTER TABLE reviews
+DROP COLUMN response;
+
+ALTER TABLE reviews
+RENAME COLUMN new_response TO response;
+
 --Correct out-of-sync sequence
 SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"photos"', 'id')), (SELECT (MAX("id") + 1) FROM "photos"), FALSE);
 SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"characteristic_reviews"', 'id')), (SELECT (MAX("id") + 1) FROM "characteristic_reviews"), FALSE);
 SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"reviews"', 'id')), (SELECT (MAX("id") + 1) FROM "reviews"), FALSE);
+
+--Improve query time
+CREATE INDEX idx_reviews_product_id ON reviews(product_id);
+CREATE INDEX idx_photos_review_id ON photos(review_id);
+CREATE INDEX idx_characteristics_product_id ON characteristics(product_id);
+CREATE INDEX idx_characteristic_reviews_characteristic_id ON characteristic_reviews(characteristic_id);
