@@ -155,7 +155,6 @@ module.exports = {
         await Promise.all([...charReviewPromises, ...photoPromises]);
         res.sendStatus(201);
       } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
       }
     }
