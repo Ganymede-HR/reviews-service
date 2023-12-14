@@ -45,10 +45,10 @@ CREATE TABLE characteristic_reviews (
 );
 
 --ETL Code
-\copy reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews.csv' DELIMITER ',' CSV HEADER;
-\copy photos FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
-\copy characteristics FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristics.csv' DELIMITER ',' CSV HEADER;
-\copy characteristic_reviews FROM '/Users/hazel/RFP2310/ganymede/reviews-service/data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+\copy reviews FROM 'data/reviews.csv' DELIMITER ',' CSV HEADER;
+\copy photos FROM 'data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+\copy characteristics FROM 'data/characteristics.csv' DELIMITER ',' CSV HEADER;
+\copy characteristic_reviews FROM 'data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
 --Transform Date Format
 ALTER TABLE reviews
