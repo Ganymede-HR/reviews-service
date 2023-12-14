@@ -14,9 +14,9 @@ module.exports = {
     if (!req.query.product_id) {
       res.status(422).send('Invalid product_id');
     } else {
-      const page = req.query.page || 1;
-      const count = req.query.count || 5;
-      const sort = req.query.sort || 'relevance';
+      const page = Number(req.query.page) || 1;
+      const count = Number(req.query.count) || 5;
+      const sort = req.query.sort || 'relevant';
       const { product_id } = req.query;
 
       let sortQuery;
@@ -26,7 +26,7 @@ module.exports = {
       if (sort === 'helpful') {
         sortQuery = 'helpfulness DESC';
       }
-      if (sort === 'relevance') {
+      if (sort === 'relevant') {
         sortQuery = 'date DESC, helpfulness DESC';
       }
 
@@ -40,15 +40,15 @@ module.exports = {
         FROM reviews AS r
         WHERE product_id = $1
         AND reported = false
-        ORDER BY $2
-        LIMIT $3
-        OFFSET $4
+        ORDER BY ${sortQuery}
+        LIMIT $2
+        OFFSET $3
       `;
 
       const offset = count * (page - 1);
 
       try {
-        const result = await pool.query(queryText, [product_id, sortQuery, count, offset]);
+        const result = await pool.query(queryText, [product_id, count, offset]);
         const response = {
           product_id,
           page,
@@ -137,22 +137,24 @@ module.exports = {
           req.body.email,
         ]);
         const reviewID = await result.rows[0].id;
+        let charReviewPromises = [];
+        let photoPromises = [];
 
         if (Object.keys(chars).length) {
-          Object.entries(chars).forEach(async ([charId, charVal]) => {
-            await pool.query(charReviewQueryText, [charId, reviewID, charVal]);
-          });
+          charReviewPromises = Object.entries(chars).map(([charId, charVal]) => (
+            pool.query(charReviewQueryText, [charId, reviewID, charVal])
+          ));
         }
 
         if (req.body.photos.length) {
-          req.body.photos.forEach(async (url) => {
-            await pool.query(photoQueryText, [reviewID, url]);
-          });
+          photoPromises = req.body.photos.map((url) => (
+            pool.query(photoQueryText, [reviewID, url])
+          ));
         }
 
+        await Promise.all([...charReviewPromises, ...photoPromises]);
         res.sendStatus(201);
       } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
       }
     }
