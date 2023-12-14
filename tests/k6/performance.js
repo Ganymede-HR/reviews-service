@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { sleep } from 'k6';
+import { sleep, check } from 'k6';
 
 export const options = {
   stages: [
@@ -18,10 +18,16 @@ export default function() {
   const productEndpoint = `${url}/?product_id=${randomID}`;
   const productMetaEndpoint = `${url}/meta/?product_id=${randomID}`;
 
-  http.get(productEndpoint);
-  sleep(1);
-
-  // http.get(productMetaEndpoint);
+  // const getReviews = http.get(productEndpoint);
   // sleep(1);
+  // check(getReviews, {
+  //   'response code was 200': (response) => response.status === 200,
+  // });
+
+  const getMeta = http.get(productMetaEndpoint);
+  sleep(1);
+  check(getMeta, {
+    'response code was 200': (response) => response.status === 200,
+  });
 }
 
