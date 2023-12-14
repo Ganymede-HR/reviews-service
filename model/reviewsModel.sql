@@ -45,10 +45,10 @@ CREATE TABLE characteristic_reviews (
 );
 
 --ETL Code
-\COPY reviews FROM 'data/reviews.csv' DELIMITER ',' CSV HEADER;
-\COPY photos FROM 'data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
-\COPY characteristics FROM 'data/characteristics.csv' DELIMITER ',' CSV HEADER;
-\COPY characteristic_reviews FROM 'data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+\COPY reviews FROM '../data/reviews.csv' DELIMITER ',' CSV HEADER;
+\COPY photos FROM '../data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+\COPY characteristics FROM '../data/characteristics.csv' DELIMITER ',' CSV HEADER;
+\COPY characteristic_reviews FROM '../data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
 --Transform Date Format
 ALTER TABLE reviews
