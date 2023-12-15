@@ -10,7 +10,8 @@ app.use(morgan('dev'));
 
 app.use('/reviews', reviewRouter);
 
+const PGHOST = process.env.PGHOST || 'localhost';
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT);
-console.log(`Server listening at http://localhost:${PORT}`);
+console.log(`Server listening at http://${PGHOST}:${PORT}`);
