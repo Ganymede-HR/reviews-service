@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 
 const reviewRouter = express.Router();
@@ -9,19 +10,21 @@ const {
   reportReview,
 } = require('./reviewControllers');
 
-// // Get list of reviews
+reviewRouter.get('/')
+
+// Get list of reviews
 reviewRouter.get('/', getReviews);
 
-// // Get metadata for a given product
+// Get metadata for a given product
 reviewRouter.get('/meta', getMeta);
 
-// // Add a review
+// Add a review
 reviewRouter.post('/', addReview);
 
 // Mark review as helpful
 reviewRouter.put('/:review_id/helpful', updateHelpfulCount);
 
-// // Report review
+// Report review
 reviewRouter.put('/:review_id/report', reportReview);
 
 module.exports = reviewRouter;
