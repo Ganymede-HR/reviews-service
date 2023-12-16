@@ -9,6 +9,9 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/reviews', reviewRouter);
+app.get(`/${process.env.LOADERIO}`, (req, res) => {
+  res.send(process.env.LOADERIO);
+})
 
 const PGHOST = process.env.PGHOST || 'localhost';
 const PORT = process.env.PORT || 3000;
