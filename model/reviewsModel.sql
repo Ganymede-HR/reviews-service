@@ -84,7 +84,7 @@ SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"photos"', 'id')), (SELECT (MAX("i
 SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"characteristic_reviews"', 'id')), (SELECT (MAX("id") + 1) FROM "characteristic_reviews"), FALSE);
 SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"reviews"', 'id')), (SELECT (MAX("id") + 1) FROM "reviews"), FALSE);
 
---Improve query time
+---Improve query time
 CREATE INDEX idx_reviews_product_id ON reviews(product_id);
 CREATE INDEX idx_photos_review_id ON photos(review_id);
 CREATE INDEX idx_characteristics_product_id ON characteristics(product_id);
