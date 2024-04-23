@@ -20,7 +20,7 @@
 
 > Optimize and scale the API to handle production level traffic with low latency and <1% error rates 
 
-> Handled & ETL 10 million rows of data into Postgres
+> Handled & ETL 18 million rows of data into Postgres
 
 ***
 
